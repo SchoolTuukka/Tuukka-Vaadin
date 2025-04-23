@@ -1,5 +1,6 @@
 package com.tuk.prj.views.masterdetailruns;
 
+import com.tuk.prj.data.Game;
 import com.tuk.prj.data.SpeedRuns;
 import com.tuk.prj.services.SpeedRunsService;
 import com.vaadin.flow.component.UI;
@@ -15,8 +16,8 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.*;
+import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -27,6 +28,8 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import jakarta.annotation.security.RolesAllowed;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
@@ -41,6 +44,7 @@ public class MasterDetailrunsView extends Div implements BeforeEnterObserver {
     private final String SPEEDRUNS_EDIT_ROUTE_TEMPLATE = "/%s/edit";
 
     private final Grid<SpeedRuns> grid = new Grid<>(SpeedRuns.class, false);
+    private final Binder<SpeedRuns> binder = new BeanValidationBinder<>(SpeedRuns.class); // Remove redundant binder declaration
 
     private TextField name;
     private TextField lastname;
@@ -51,12 +55,11 @@ public class MasterDetailrunsView extends Div implements BeforeEnterObserver {
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
 
-    private final BeanValidationBinder<SpeedRuns> binder;
-
     private SpeedRuns speedRuns;
 
     private final SpeedRunsService speedRunsService;
 
+    @Autowired
     public MasterDetailrunsView(SpeedRunsService speedRunsService) {
         this.speedRunsService = speedRunsService;
         addClassNames("master-detailruns-view");
@@ -73,7 +76,10 @@ public class MasterDetailrunsView extends Div implements BeforeEnterObserver {
         grid.addColumn("name").setAutoWidth(true);
         grid.addColumn("lastname").setAutoWidth(true);
         grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("game").setAutoWidth(true);
+        grid.addColumn(speedRun -> {
+            Game game = speedRun.getGame();
+            return game != null ? game.getTitle() : "";
+        }).setHeader("Game").setAutoWidth(true);
         grid.addColumn("time").setAutoWidth(true);
         grid.setItems(query -> speedRunsService.list(VaadinSpringDataHelpers.toSpringPageRequest(query)).stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -89,12 +95,32 @@ public class MasterDetailrunsView extends Div implements BeforeEnterObserver {
         });
 
         // Configure Form
-        binder = new BeanValidationBinder<>(SpeedRuns.class);
-
-        // Bind fields. This is where you'd define e.g. validation rules
         binder.forField(time).withConverter(new StringToIntegerConverter("Only numbers are allowed")).bind("time");
 
+        binder.forField(game)
+                .withConverter(new Converter<String, Game>() {
+                    @Override
+                    public Result<Game> convertToModel(String value, ValueContext context) {
+                        if (value != null && !value.isEmpty()) {
+                            // Find or create the Game object based on the string input (e.g., find by game title)
+                            Game game = new Game(); // Example: Replace with actual lookup or creation logic
+                            game.setTitle(value);  // Set the title of the game
+                            return Result.ok(game);
+                        } else {
+                            return Result.error("Game title cannot be empty");
+                        }
+                    }
+
+                    @Override
+                    public String convertToPresentation(Game value, ValueContext context) {
+                        // Convert the Game object to a String (e.g., the game's title)
+                        return value != null ? value.getTitle() : "";
+                    }
+                })
+                .bind(SpeedRuns::getGame, SpeedRuns::setGame);
+
         binder.bindInstanceFields(this);
+
 
         cancel.addClickListener(e -> {
             clearForm();
@@ -192,5 +218,5 @@ public class MasterDetailrunsView extends Div implements BeforeEnterObserver {
         this.speedRuns = value;
         binder.readBean(this.speedRuns);
 
-    }
+                }
 }
