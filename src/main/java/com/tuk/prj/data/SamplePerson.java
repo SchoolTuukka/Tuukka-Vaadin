@@ -1,11 +1,23 @@
 package com.tuk.prj.data;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDate;
 
 @Entity
 public class SamplePerson extends AbstractEntity {
+
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
+    private SpeedRuns speedRun;
+
+    public SpeedRuns getSpeedRun() {
+        return speedRun;
+    }
+    public void setSpeedRun(SpeedRuns speedRun) {
+        this.speedRun = speedRun;
+    }
 
     private String firstName;
     private String lastName;
@@ -16,6 +28,7 @@ public class SamplePerson extends AbstractEntity {
     private String occupation;
     private String role;
     private boolean important;
+
 
     public String getFirstName() {
         return firstName;

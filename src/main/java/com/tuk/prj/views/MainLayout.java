@@ -15,7 +15,10 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.Layout;
@@ -35,7 +38,7 @@ import java.util.Optional;
 @Layout
 @AnonymousAllowed
 public class MainLayout extends AppLayout {
-
+    VerticalLayout contentWrapper = new VerticalLayout();
     private H1 viewTitle;
 
     private AuthenticatedUser authenticatedUser;
@@ -45,9 +48,16 @@ public class MainLayout extends AppLayout {
         this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
 
+
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
+        contentWrapper.setSizeFull();
+        contentWrapper.setPadding(false);
+        contentWrapper.setSpacing(false);
+
+        // Set router outlet target
+        setContent(contentWrapper);
     }
 
     private void addHeaderContent() {
@@ -56,8 +66,12 @@ public class MainLayout extends AppLayout {
 
         viewTitle = new H1();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
+        HorizontalLayout header = new HorizontalLayout(toggle, viewTitle, new Span("                                Tämä On Header"));
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+
 
         addToNavbar(true, toggle, viewTitle);
+        addToNavbar(true, header);
     }
 
     private void addDrawerContent() {
@@ -126,6 +140,7 @@ public class MainLayout extends AppLayout {
     protected void afterNavigation() {
         super.afterNavigation();
         viewTitle.setText(getCurrentPageTitle());
+
     }
 
     private String getCurrentPageTitle() {

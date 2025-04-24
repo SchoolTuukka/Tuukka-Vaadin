@@ -1,23 +1,20 @@
 package com.tuk.prj.views.gridwithfilters;
 
 import com.tuk.prj.data.Game;
+import com.tuk.prj.data.GameRepository;
 import com.tuk.prj.data.SpeedRuns;
 import com.tuk.prj.services.SpeedRunsService;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -36,6 +33,7 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @PageTitle("Speed Runs Grid")
 @Route("speedruns-grid")
@@ -47,13 +45,16 @@ public class GridwithFiltersView extends Div {
     private Grid<SpeedRuns> grid;
     private Filters filters;
     private final SpeedRunsService speedRunService;
+    private final GameRepository gameRepository;
 
-    public GridwithFiltersView(SpeedRunsService speedRunService) {
+    public GridwithFiltersView(SpeedRunsService speedRunService, GameRepository gameRepository) {
         this.speedRunService = speedRunService;
+        this.gameRepository = gameRepository;
         setSizeFull();
         addClassNames("gridwith-filters-view");
 
-        filters = new Filters(this::refreshGrid);
+
+        filters = new Filters(this::refreshGrid,gameRepository);
         VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
         layout.setSizeFull();
         layout.setPadding(false);
@@ -88,15 +89,19 @@ public class GridwithFiltersView extends Div {
         private final TextField name = new TextField("Name");
         private final TextField lastname = new TextField("Last Name");
         private final TextField email = new TextField("Email");
-        private final MultiSelectComboBox<String> games = new MultiSelectComboBox<>("Game");
+        private final ComboBox<String> games = new ComboBox<>("Game");
 
-        public Filters(Runnable onSearch) {
+        public Filters(Runnable onSearch, GameRepository gameRepository) {
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
 
-            games.setItems("Mario", "Sonic", "Zelda", "Mega Man");
+            // Fetch game titles from the DB and set them
+            List<String> gameTitles = gameRepository.findAll().stream()
+                    .map(Game::getTitle)
+                    .collect(Collectors.toList());
+            games.setItems(gameTitles);
 
             Button resetBtn = new Button("Reset", e -> {
                 name.clear();
@@ -121,22 +126,30 @@ public class GridwithFiltersView extends Div {
         public Predicate toPredicate(Root<SpeedRuns> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
             List<Predicate> predicates = new ArrayList<>();
 
+            // Apply filter for name
             if (!name.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.getValue().toLowerCase() + "%"));
             }
+
+            // Apply filter for lastname
             if (!lastname.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("lastname")), "%" + lastname.getValue().toLowerCase() + "%"));
             }
+
+            // Apply filter for email
             if (!email.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("email")), "%" + email.getValue().toLowerCase() + "%"));
             }
-            if (!games.isEmpty()) {
-                predicates.add(root.get("game").in(games.getValue()));
+
+            // Apply filter for game
+            if (games.getValue() != null && !games.getValue().isEmpty()) {
+                predicates.add(cb.equal(root.get("game").get("title"), games.getValue()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         }
     }
+
 
     private Component createGrid() {
         grid = new Grid<>(SpeedRuns.class, false);

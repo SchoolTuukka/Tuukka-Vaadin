@@ -158,7 +158,7 @@ public class MasterDetailgamesView extends Div implements BeforeEnterObserver {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS); //Manuaali Värin Vahidos
         buttonLayout.add(save, cancel);
         editorLayoutDiv.add(buttonLayout);
     }

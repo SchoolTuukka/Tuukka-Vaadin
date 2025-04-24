@@ -1,8 +1,6 @@
 package com.tuk.prj.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
 @Entity
@@ -14,9 +12,20 @@ public class SpeedRuns extends AbstractEntity {
     @Email
     private String email;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
+
+    @OneToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private SamplePerson person;
+
+    public SamplePerson getPerson() {
+        return person;
+    }
+    public void setPerson(SamplePerson person) {
+        this.person = person;
+    }
 
     private Integer time;
 
