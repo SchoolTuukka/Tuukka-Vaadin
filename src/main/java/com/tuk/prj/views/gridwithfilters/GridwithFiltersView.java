@@ -23,6 +23,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 @Menu(order = 2, icon = LineAwesomeIconUrl.FILTER_SOLID)
 @AnonymousAllowed
 @Uses(Icon.class)
+
 public class GridwithFiltersView extends Div {
 
     private Grid<SpeedRuns> grid;
@@ -111,6 +113,7 @@ public class GridwithFiltersView extends Div {
                 onSearch.run();
             });
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            resetBtn.addClassName("special");
 
             Button searchBtn = new Button("Search", e -> onSearch.run());
             searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
