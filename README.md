@@ -1,6 +1,7 @@
 # TuukkaVaadin
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Ohjeet Opettajalle
++ Voisitko Tarkistaa Task 3 tehtävät kun näköjään unohtunut arvioida
 
 
 Data ja entiteetit. Jokaiselle pitää olla toteutettuna Vaatimella CRUD operaatioista, haku ja tallennus ja repository käyttöliittymältä taustapalvelimen kautta tietokantaan
