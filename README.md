@@ -1,4 +1,98 @@
 # TuukkaVaadin
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ohjeet Opettajalle
+
+
+Data ja entiteetit. Jokaiselle pitää olla toteutettuna Vaatimella CRUD operaatioista, haku ja tallennus ja repository käyttöliittymältä taustapalvelimen kautta tietokantaan
+1. Kyllä
+2. Sample Personilla ja Speedruns ID on 1-1 yhteys Eli Vain yksi Speedrun voi olla Per henkilö
+3. Speedruns Ja Games On one to Many Yhteys Eli Yhdellä Pelillä Voi Olla Monta Speedrunia
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Suodattimet. Täytyy löytyä GRID-elementti, jolle tehdään erilaisia suodatuksia
+1, 2, 3 Speed Runs Grid Osiossa Pystyy Hakemaan Nimellä  Sukunimellä Sähköpostilla Ja Ja Relaatiossa Olevalla Game osiolla On Mahdollista Vaikka Käyttää Kaikkia Samaan Aikaan
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tyylit
+1. Globaalisti Muutetut Löytyy Style.css HTML kohdan alta
+2. Suoraan Napille annettu tyylitys Löytyy MasterDetailGames View Riviltä 161
+3. En ihan Varma mitä tällä Tarkoitettiin Mutta. Tyylitys Tehty antamalla Class name napille Gridsfiltersview Rivillä 116. Lisäksi Style.css nimelle oma tyyli.
+   Toinen Mitä Tein Annoin Kaikille nappi Kompnenteille Tyylin Style.css + Tein Components kansioon vaadin button.css joka sisältää tyylitystä
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Ulkoasu
+1.kyllä
+2. Näkyy Keskellä ylhäällä vasemmalla lukee Tämäon header
+3. Näkyy Vasemmalla
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Autentikointi ja tietoturva
+1. <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+  Löytyy Pom.xml
+
+2. Löytyy. jos ei ole kirjautunut Katso Ala Vasemalle. Tuli automaattisesti Vaadin projektin luomis vaiheessa
+3. Löytyy Automaattisesti luodut admin:admin ja user:user Käyttäjät
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lisätoiminnallisuudet (1 piste/toiminnallisuus) Poikkeus, ei tarvitse täyttyä alemman tason ylemmän saavuttamiseksi 
+1. Tervetuloa Githubiin
+2. Salasanat ovat hashed_password tietokannassa. ei normaali näkymänä
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Vain Admin Näkee Master-Details näkymät
+Käyttäjä Pääsee Speedruns Grid
+
+Admin Voi Päivittää Ja lisätä Tietoja Master-Details sivuilla
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 This project can be used as a starting point to create your own Vaadin application with Spring Boot.
 It contains all the necessary configuration and some placeholder files to get you started.
