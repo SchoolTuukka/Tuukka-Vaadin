@@ -11,6 +11,7 @@ Data ja entiteetit. Jokaiselle pitää olla toteutettuna Vaatimella CRUD operaat
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Suodattimet. Täytyy löytyä GRID-elementti, jolle tehdään erilaisia suodatuksia
+
 1, 2, 3 Speed Runs Grid Osiossa Pystyy Hakemaan Nimellä  Sukunimellä Sähköpostilla Ja Ja Relaatiossa Olevalla Game osiolla On Mahdollista Vaikka Käyttää Kaikkia Samaan Aikaan
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
